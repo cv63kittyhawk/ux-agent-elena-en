@@ -88,7 +88,7 @@ This project explores whether a character-oriented interface can make AI interac
 - Typing animation
 - Voice interaction
 - Memory system
-- Kyoto Animation edition 🌸
+- Soft Human Edition 🌸
 
 ---
 
