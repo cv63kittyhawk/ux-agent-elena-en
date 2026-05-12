@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elena Chat UI Prototype</title>
+  <style>
+    :root {
+      --bg: #0f1221;
+      --panel: rgba(255, 255, 255, 0.08);
+      --panel-strong: rgba(255, 255, 255, 0.12);
+      --text: #eef2ff;
+      --muted: #a9b2d0;
+      --accent: #8b5cf6;
+      --accent-2: #22c55e;
+      --border: rgba(255, 255, 255, 0.14);
+      --user: #1d4ed8;
+      --assistant: rgba(255,255,255,0.08);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(139, 92, 246, 0.28), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.18), transparent 28%),
+        linear-gradient(135deg, #0b1020, #11162a 45%, #0c1222);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: min(1200px, 100%);
+      min-height: 720px;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      padding: 22px;
+      gap: 18px;
+    }
+
+    .badge {
+      align-self: flex-start;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ddd6fe;
+      background: rgba(139, 92, 246, 0.18);
+      border: 1px solid rgba(139, 92, 246, 0.28);
+      border-radius: 999px;
+      padding: 7px 12px;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      background: linear-gradient(160deg, rgba(139,92,246,0.24), rgba(255,255,255,0.04));
+      border: 1px solid var(--border);
+      aspect-ratio: 3 / 4;
+      display: grid;
+      place-items: center;
+    }
+
+    .avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .avatar-placeholder {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .char-name {
+      font-size: 30px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .char-role {
+      font-size: 14px;
+      color: #c4b5fd;
+      margin-top: 4px;
+    }
+
+    .char-desc {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .meta {
+      display: grid;
+      gap: 10px;
+    }
+
+    .meta-item {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+    }
+
+    .meta-label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .meta-value {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .chat-panel {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 720px;
+    }
+
+    .chat-header {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .chat-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .chat-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #d1fae5;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.22);
+      padding: 8px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.12);
+    }
+
+    .messages {
+      padding: 24px;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+
+    .message {
+      max-width: min(82%, 760px);
+      line-height: 1.75;
+      font-size: 15px;
+      white-space: pre-wrap;
+    }
+
+    .message.assistant {
+      align-self: flex-start;
+    }
+
+    .message.user {
+      align-self: flex-end;
+    }
+
+    .message-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .message-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .bubble {
+      padding: 14px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      max-width: 100%;
+    }
+
+    .assistant .bubble {
+      background: var(--assistant);
+      border-top-left-radius: 8px;
+    }
+
+    .user .bubble {
+      background: rgba(29, 78, 216, 0.22);
+      border: 1px solid rgba(96, 165, 250, 0.24);
+      border-top-right-radius: 8px;
+    }
+
+    .message small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .composer {
+      padding: 18px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      gap: 12px;
+      background: rgba(9, 14, 27, 0.5);
+    }
+
+    .composer-top {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+    }
+
+    .composer-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 68px;
+      max-height: 180px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border-radius: 18px;
+      padding: 16px 18px;
+      font: inherit;
+      outline: none;
+    }
+
+    textarea::placeholder {
+      color: #9aa3c3;
+    }
+
+    button {
+      border: none;
+      border-radius: 18px;
+      padding: 16px 20px;
+      font: inherit;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      cursor: pointer;
+      min-width: 132px;
+      box-shadow: 0 12px 30px rgba(99, 102, 241, 0.28);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .helper {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    code.inline {
+      background: rgba(255,255,255,0.08);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #ddd6fe;
+    }
+
+    @media (max-width: 960px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-panel {
+        min-height: 640px;
+      }
+
+      .message {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <aside class="panel sidebar">
+      <div class="badge">Human Insight Interface</div>
+
+      <div class="avatar-wrap">
+        <!-- Replace this file with your character image. -->
+        <img src="assets/elena_ig.png" alt="Elena IG Edition" />
+      </div>
+
+      <div>
+        <h1 class="char-name">Elena</h1>
+        <div class="char-role">Insight Navigator / UX Strategy Agent</div>
+      </div>
+
+      <div class="char-desc">
+        Elena is a character-based chat UI prototype designed to explore how AI conversations change when the interface feels less like a tool and more like a presence.
+      </div>
+
+      <div class="meta">
+        <div class="meta-item">
+          <span class="meta-label">Concept</span>
+          <div class="meta-value">Human insight still needs human contact.</div>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Role</span>
+          <div class="meta-value">Listening, reframing, structuring, and helping users find the next question.</div>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Prototype</span>
+          <div class="meta-value">Single HTML file. Demo responses only. Ready to evolve into an API-connected experience.</div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="panel chat-panel">
+      <header class="chat-header">
+        <div>
+          <h2 class="chat-title">Talk with Elena</h2>
+          <div class="chat-subtitle">A character-based AI chat UI prototype / Demo mode</div>
+        </div>
+        <div class="status">Prototype Ready</div>
+      </header>
+
+      <div class="messages" id="messages">
+        <div class="message assistant">
+          <div class="message-row">
+            <img src="assets/elena_ig.png" class="message-avatar" alt="Elena avatar" />
+            <div class="bubble">
+              <small>Elena</small>
+              Hello. What would you like to explore today?
+              It does not need to be perfectly clear yet. We can start from fragments and turn them into structure.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="composer">
+        <div class="composer-top">
+          <span class="chip">Single HTML</span>
+          <span class="chip">Character UI</span>
+          <span class="chip">Demo responses</span>
+          <span class="chip">API-ready concept</span>
+        </div>
+
+        <div class="composer-row">
+          <textarea id="input" placeholder="For example: Help me understand the real user problem behind this service idea."></textarea>
+          <button id="sendBtn">Send</button>
+        </div>
+
+        <div class="helper">
+          This is a <strong>demo prototype</strong>. Replace <code class="inline">fakeReply()</code> with your own API endpoint to connect a real AI model.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const messages = document.getElementById('messages');
+    const input = document.getElementById('input');
+    const sendBtn = document.getElementById('sendBtn');
+
+    function addMessage(role, text, label) {
+      const el = document.createElement('div');
+      el.className = `message ${role}`;
+
+      if (role === 'assistant') {
+        el.innerHTML = `
+          <div class="message-row">
+            <img src="assets/elena_ig.png" class="message-avatar" alt="Elena avatar" />
+            <div class="bubble">
+              <small>${label}</small>
+              ${escapeHtml(text).replace(/\n/g, '<br>')}
+            </div>
+          </div>
+        `;
+      } else {
+        el.innerHTML = `
+          <div class="bubble">
+            <small>${label}</small>
+            ${escapeHtml(text).replace(/\n/g, '<br>')}
+          </div>
+        `;
+      }
+
+      messages.appendChild(el);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function fakeReply(userText) {
+      const templates = [
+        `That is an interesting starting point.\n\nWhen I hear “${userText}”, I would separate it into three layers:\n1. What the user says\n2. What the user actually feels\n3. What question we should ask next`,
+        `I see.\n\nBefore jumping to a solution, I would first look for the human signal behind the request: hesitation, frustration, expectation, or a small contradiction in the story.`,
+        `Good theme.\n\nLet’s treat this as a UX research question. The first step is not to answer it, but to find where the real tension lives.`,
+        `This reminds me of an important design principle:\n\nPeople do not always reveal their real thoughts in direct answers. Sometimes the most useful insight appears in the pauses, detours, and small emotional shifts.`
+      ];
+
+      return templates[Math.floor(Math.random() * templates.length)];
+    }
+
+    function handleSend() {
+      const text = input.value.trim();
+      if (!text) return;
+
+      addMessage('user', text, 'You');
+      input.value = '';
+
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Thinking...';
+
+      setTimeout(() => {
+        const reply = fakeReply(text);
+        addMessage('assistant', reply, 'Elena');
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send';
+      }, 500);
+    }
+
+    sendBtn.addEventListener('click', handleSend);
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
+    });
+
+    // =============================
+    // API integration idea
+    // =============================
+    // Important:
+    // - Do not expose your API key in frontend code.
+    // - Use your own backend endpoint in production.
+    //
+    // async function callYourServer(userText, history) {
+    //   const res = await fetch('/api/chat', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({
+    //       character: {
+    //         name: 'Elena',
+    //         systemPrompt: 'You are Elena, a calm UX strategy character who helps users uncover human insight...'
+    //       },
+    //       message: userText,
+    //       history
+    //     })
+    //   });
+    //
+    //   const data = await res.json();
+    //   return data.reply;
+    // }
+  </script>
+</body>
+</html>
