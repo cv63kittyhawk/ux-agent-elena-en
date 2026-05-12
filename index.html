@@ -220,13 +220,40 @@
     }
 
     .message-avatar {
-      width: 38px;
-      height: 38px;
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
       object-fit: cover;
+      object-position: top center;
+      transform: scale(1.18);
+      display: block;
+    }
+
+    .message-avatar-frame {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      overflow: hidden;
       flex-shrink: 0;
       border: 1px solid var(--border);
       background: rgba(255,255,255,0.08);
+    }
+
+    .message-avatar-frame {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .message-avatar-frame .message-avatar {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: none;
     }
 
     .bubble {
@@ -234,6 +261,19 @@
       border-radius: 20px;
       border: 1px solid var(--border);
       max-width: 100%;
+      white-space: normal;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .bubble-text {
+      display: block;
+      line-height: 1.75;
+    }
+
+    .bubble-text {
+      display: block;
+      line-height: 1.75;
     }
 
     .assistant .bubble {
@@ -362,7 +402,6 @@
       <div class="badge">Human Insight Interface</div>
 
       <div class="avatar-wrap">
-        <!-- Replace this file with your character image. -->
         <img src="assets/elena_ig.png" alt="Elena IG Edition" />
       </div>
 
@@ -403,11 +442,14 @@
       <div class="messages" id="messages">
         <div class="message assistant">
           <div class="message-row">
-            <img src="assets/elena_ig.png" class="message-avatar" alt="Elena avatar" />
+            <div class="message-avatar-frame">
+              <div class="message-avatar-frame">
+              <img src="assets/elena_ig.png" class="message-avatar" alt="Elena avatar" />
+            </div>
+            </div>
             <div class="bubble">
               <small>Elena</small>
-              Hello. What would you like to explore today?
-              It does not need to be perfectly clear yet. We can start from fragments and turn them into structure.
+              <span class="bubble-text">Hello. What would you like to explore today?<br><br>It does not need to be perfectly clear yet. We can start from fragments and turn them into structure.</span>
             </div>
           </div>
         </div>
@@ -445,10 +487,14 @@
       if (role === 'assistant') {
         el.innerHTML = `
           <div class="message-row">
-            <img src="assets/elena_ig.png" class="message-avatar" alt="Elena avatar" />
+            <div class="message-avatar-frame">
+              <div class="message-avatar-frame">
+              <img src="assets/elena_ig.png" class="message-avatar" alt="Elena avatar" />
+            </div>
+            </div>
             <div class="bubble">
               <small>${label}</small>
-              ${escapeHtml(text).replace(/\n/g, '<br>')}
+              <span class="bubble-text">${escapeHtml(text).replace(/\n/g, '<br>')}</span>
             </div>
           </div>
         `;
@@ -456,7 +502,7 @@
         el.innerHTML = `
           <div class="bubble">
             <small>${label}</small>
-            ${escapeHtml(text).replace(/\n/g, '<br>')}
+              <span class="bubble-text">${escapeHtml(text).replace(/\n/g, '<br>')}</span>
           </div>
         `;
       }
