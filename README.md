@@ -97,8 +97,11 @@ This project explores whether a character-oriented interface can make AI interac
 ---
 
 ##　Screenshot
+
 ![Screenshot](assets/screenshot.png)
+
 ![Screenshot](assets/screenshot_chat.png)
+
 ---
 ## Author
 
