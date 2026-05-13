@@ -1,5 +1,5 @@
 # Elena Chat UI Prototype
-![Screenshot](assets/screenshot.png)
+![Screenshot](assets/screenshot_elena.png)
 
 A character-based AI chat interface prototype built with pure HTML, CSS, and JavaScript.
 
@@ -96,6 +96,10 @@ This project explores whether a character-oriented interface can make AI interac
 
 ---
 
+##　Screenshot
+![Screenshot](assets/screenshot.png)
+![Screenshot](assets/screenshot_chat.png)
+---
 ## Author
 
 Designed and developed by Yutaka Morita.
