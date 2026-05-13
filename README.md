@@ -89,6 +89,10 @@ This project explores whether a character-oriented interface can make AI interac
 - Voice interaction
 - Memory system
 - Soft Human Edition 🌸
+- Real-time character animation
+- Emotion-aware interaction
+- Expression-driven UI responses
+- Voice and presence-based communication
 
 ---
 
