@@ -1,5 +1,5 @@
 # Elena Chat UI Prototype
-![Screenshot](assets/screenshot_elena.png)
+![OGP](assets/ogp.png)
 
 A character-based AI chat interface prototype built with pure HTML, CSS, and JavaScript.
 
@@ -25,6 +25,14 @@ This prototype currently uses demo responses only.
 
 ---
 
+## Demo
+
+GitHub Pages:
+
+https://cv63kittyhawk.github.io/ux-agent-elena-en/
+
+---
+
 ## Features
 
 - Single HTML file
@@ -42,6 +50,7 @@ This prototype currently uses demo responses only.
 - HTML
 - CSS
 - Vanilla JavaScript
+- GitHub Pages
 
 No frameworks.
 No build tools.
@@ -56,7 +65,8 @@ Just a lightweight prototype.
 ├── index.html
 ├── README.md
 └── assets/
-    └── elena_ig.png
+    ├── elena_ig.png
+    └── ogp.png
 ```
 ---
 ## Why I Built This
@@ -99,10 +109,6 @@ This project explores whether a character-oriented interface can make AI interac
 ## Screenshot
 
 ![Screenshot](assets/screenshot.png)
-
-![Screenshot](assets/screenshot_elena.png)
-
-![Screenshot](assets/screenshot_chat.png)
 
 ---
 ## Author
